@@ -1,0 +1,170 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Montserrat, sans-serif;
+}
+
+.block {
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100vh;
+}
+
+.search-form {
+  display: flex;
+  max-width: max-content;
+  margin: 0 auto;
+  margin-left: 653px;
+}
+
+.form-img {
+  margin-left: 0 auto;
+  margin-right: 10px;
+}
+
+.form-place {
+  width: 272px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid #808080;
+  color: #808080;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.64px;
+}
+
+.btn {
+  padding: 8px 16px;
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  background: #4E75FF;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.64px;
+}
+
+.btn:hover {
+  background-color: #2cbed7;
+}
+
+.img-container {
+  display: flex;
+  margin-left: 150px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 20px;
+  margin-bottom: 36px;
+}
+
+.image-box {
+  margin: 10px;
+  width: 360px;
+  height: 200px;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.image-container {
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.my-image {
+  width: 360px;
+  height: 200px;
+  transition: transform 0.2s;
+  margin-top: -12px;
+}
+
+.my-image:hover {
+  transform: scale(1.1);
+}
+
+.ul-item {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.image-li {
+  margin-left: 20px;
+  font-family: Montserrat;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.48px;
+  margin-bottom: 10px;
+}
+
+.general-frame {
+  border: 1px solid #000;
+  gap: 24px;
+}
+
+.is-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+.loader {
+  position: absolute;
+  justify-content: center;
+  margin-left: 575px;
+  margin-top: -110px;
+  width: 64px;
+  height: 64px;
+  background: #fff;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.loader:after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  margin: auto;
+  background: #222b32;
+  border-radius: 50%;
+  justify-content: center;
+}
+
+.loader:before {
+  content: '';
+  position: absolute;
+  inset: 0px;
+  margin: auto;
+  background: #de3500;
+  animation: crlMugLoader 2s linear infinite alternate;
+}
+
+@keyframes crlMugLoader {
+
+  0%,
+  10% {
+    transform: translateY(64px)
+  }
+
+  90%,
+  100% {
+    transform: translateY(0px)
+  }
+}
