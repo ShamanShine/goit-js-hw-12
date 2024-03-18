@@ -168,3 +168,35 @@ body {
     transform: translateY(0px)
   }
 }
+
+.js-btn-load {
+  padding: 8px 16px;
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  background: #4E75FF;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.64px;
+  /* justify-content: center; */
+  /* display: flex; */
+  /* margin-left: auto;
+  margin-right: auto; */
+  position: fixed;
+  bottom: 20px;
+  /* Отступ от нижнего края экрана */
+  left: 50%;
+  /* Центрирование по горизонтали */
+  transform: translateX(-50%);
+  /* Смещение влево на половину ширины кнопки */
+  z-index: 1000;
+  /* Установка z-index для кнопки поверх других элементов */
+}
+
+.js-btn-load:hover {
+  background-color: #2cbed7;
+}

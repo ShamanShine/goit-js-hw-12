@@ -11,18 +11,28 @@ const refs = {
   formEl: document.querySelector('.search-form'),
   infoEl: document.querySelector('.img-container'),
   loader: document.querySelector('.loader'),
+  btnLoadMore: document.querySelector('.js-btn-load'),
 };
 
-refs.formEl.addEventListener('submit', event => {
-  event.preventDefault();
+let query;
+let page; // чтоб запросы не повторялись
+let maxPage;
 
-  refs.infoEl.innerHTML = '';
-  refs.loader.classList.remove('is-hidden'); // Показать индикатор загрузки
+refs.formEl.addEventListener('submit', onFormSubmit);
+refs.btnLoadMore.addEventListener('click', onLoadMoreClick);
 
-  const query = event.currentTarget.elements.query.value.trim();
+function showLoadBtn() {
+  refs.btnLoadMore.classList.remove('is-hidden');
+}
+function hideLoadBtn() {
+  refs.btnLoadMore.classList.add('is-hidden');
+}
 
-  event.currentTarget.elements.query.value = ''; //очищаем поле ввода после отправки запроса
-
+async function onFormSubmit(e) {
+  e.preventDefault();
+  query = e.target.elements.query.value.trim();
+  page = 1;
+  showLoader();
   if (query === '') {
     iziToast.error({
       message: 'Please enter a search query',
@@ -32,37 +42,72 @@ refs.formEl.addEventListener('submit', event => {
     return;
   }
 
-  searchImages(query)
-    .then(data => {
-      if (data.hits && data.hits.length > 0) {
-        renderMarkup(refs, data.hits, 18); // количество изображений для отображения. Надо 18
-      } else {
-        iziToast.error({
-          message: 'No images found for the given query',
-          position: 'center',
-          transitionIn: 'fadeInLeft',
-        });
-      }
-    })
-    .catch(error => {
-      console.error(error);
+  e.currentTarget.elements.query.value = ''; //очищаем поле ввода после отправки запроса
+
+  try {
+    const data = await searchImages(query, page);
+    refs.infoEl.innerHTML = '';
+    if (data.hits && data.hits.length > 0) {
+      renderMarkup(refs, data.hits);
+      hideLoader();
+      maxPage = Math.ceil(data.totalHits / 15);
+      // checkBtnVisibleStatus();
+    } else {
       iziToast.error({
-        message: 'Failed to fetch images. Please try again later.',
+        message: 'No images found for the given query',
         position: 'center',
         transitionIn: 'fadeInLeft',
       });
-    })
-    .finally(() => {
-      refs.loader.classList.add('is-hidden');
+    }
+  } catch (error) {
+    console.error(error);
+    iziToast.error({
+      message: 'Failed to fetch images. Please try again later.',
+      position: 'center',
+      transitionIn: 'fadeInLeft',
     });
-});
+  } finally {
+    e.target.reset();
+    checkBtnVisibleStatus();
+  }
+}
 
-const lightbox = new SimpleLightbox('.img-container', {
-  overlay: true,
-  overlayOpacity: 0.9,
-  animationSpeed: 1000,
-  scrollZoomFactor: 0.1,
-  navText: ['←', '→'],
-  captionsData: 'alt',
-  captionDelay: 250,
-});
+async function onLoadMoreClick() {
+  page += 1;
+  showLoader();
+
+  try {
+    const data = await searchImages(query, page);
+    renderMarkup(refs, data.hits); // Добавляем новые изображения к уже загруженным
+
+    hideLoader();
+    checkBtnVisibleStatus();
+  } catch (error) {
+    console.error(error);
+    iziToast.error({
+      message: 'Failed to fetch more images. Please try again later.',
+      position: 'center',
+      transitionIn: 'fadeInLeft',
+    });
+    hideLoader();
+    // lightbox.refresh();
+  }
+  const height = refs.formEl.firstElementChild.getBoundingClientRect().height;
+  // Здесь можно также добавить скроллинг к новым изображениям, если это необходимо
+}
+
+function showLoader() {
+  refs.loader.classList.remove('is-hidden');
+}
+
+function hideLoader() {
+  refs.loader.classList.add('is-hidden');
+}
+
+function checkBtnVisibleStatus() {
+  if (page >= maxPage) {
+    hideLoadBtn();
+  } else {
+    showLoadBtn();
+  }
+}

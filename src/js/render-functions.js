@@ -11,7 +11,7 @@ const lightbox = new SimpleLightbox('.img-container a', {
   captionDelay: 250,
 });
 
-export function renderMarkup(refs, pics, limit = 18) {
+export function renderMarkup(refs, pics, limit = 2000) {
   refs.infoEl.innerHTML = '';
 
   if (!pics || pics.length === 0) {
