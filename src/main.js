@@ -20,14 +20,26 @@ let maxPage;
 
 refs.formEl.addEventListener('submit', onFormSubmit);
 refs.btnLoadMore.addEventListener('click', onLoadMoreClick);
-
+// ============================================ Функция для снятия/установки индикатора загрузки
+function showLoader() {
+  refs.loader.classList.remove('is-hidden');
+}
+function hideLoader() {
+  refs.loader.classList.add('is-hidden');
+}
+// ============================================ Функция для кнопки "load more" монтаж\демонтаж из области видимости
 function showLoadBtn() {
   refs.btnLoadMore.classList.remove('is-hidden');
 }
 function hideLoadBtn() {
   refs.btnLoadMore.classList.add('is-hidden');
 }
-
+// =========================================== Функция для скрытия кнопки load more + очиска разметки, "прикручиваем" к ошибкам
+function hideLoadBtnAndMarkup() {
+  refs.btnLoadMore.classList.add('is-hidden');
+  refs.infoEl.innerHTML = '';
+}
+// ===================================================================================================================================================================================
 async function onFormSubmit(e) {
   e.preventDefault();
   query = e.target.elements.query.value.trim();
@@ -39,11 +51,12 @@ async function onFormSubmit(e) {
       position: 'center',
       transitionIn: 'fadeInLeft',
     });
+    hideLoader();
+    hideLoadBtn();
+    // hideLoadBtnAndMarkup();
     return;
   }
-
   e.currentTarget.elements.query.value = ''; //очищаем поле ввода после отправки запроса
-
   try {
     const data = await searchImages(query, page);
     refs.infoEl.innerHTML = '';
@@ -61,6 +74,8 @@ async function onFormSubmit(e) {
     }
   } catch (error) {
     console.error(error);
+    hideLoader();
+    hideLoadBtnAndMarkup();
     iziToast.error({
       message: 'Failed to fetch images. Please try again later.',
       position: 'center',
@@ -71,28 +86,26 @@ async function onFormSubmit(e) {
     checkBtnVisibleStatus();
   }
 }
-
+// ================================== Функция для кнопки load more
 async function onLoadMoreClick() {
   page += 1;
   showLoader();
-
   try {
     const data = await searchImages(query, page);
     renderMarkup(refs, data.hits); // добавляем новые изображения к уже загруженным
-
     hideLoader();
     checkBtnVisibleStatus();
   } catch (error) {
     console.error(error);
+    // hideLoader();
+    hideLoadBtnAndMarkup();
     iziToast.error({
       message: 'Failed to fetch more images. Please try again later.',
       position: 'center',
       transitionIn: 'fadeInLeft',
     });
-    hideLoader();
-    // lightbox.refresh();
   } finally {
-    //проверяем и сообщаем, если конец колекции
+    //проверяем и сообщаем, если "конец колекции"
     if (page >= maxPage) {
       iziToast.info({
         message: 'End of image collection',
@@ -105,20 +118,13 @@ async function onLoadMoreClick() {
       refs.infoEl.firstElementChild.getBoundingClientRect().height;
 
     window.scrollBy({
-      top: 5 * cardHeight, // прокрутка на 6 высот карточки
+      top: 6 * cardHeight, // прокрутка на 6 высот карточки
       behavior: 'smooth', // плавная анимация прокрутки
     });
   }
 }
 
-function showLoader() {
-  refs.loader.classList.remove('is-hidden');
-}
-
-function hideLoader() {
-  refs.loader.classList.add('is-hidden');
-}
-
+// ================================== Функция для проверки видимости кнопки load more при достижении конца коллекции
 function checkBtnVisibleStatus() {
   if (page >= maxPage) {
     hideLoadBtn();
