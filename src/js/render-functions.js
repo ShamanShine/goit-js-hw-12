@@ -11,8 +11,8 @@ const lightbox = new SimpleLightbox('.img-container a', {
   captionDelay: 250,
 });
 
-export function renderMarkup(refs, pics, limit = 2000) {
-  refs.infoEl.innerHTML = '';
+export function renderMarkup(refs, pics) {
+  // refs.infoEl.innerHTML = '';
 
   if (!pics || pics.length === 0) {
     iziToast.error({
@@ -22,17 +22,16 @@ export function renderMarkup(refs, pics, limit = 2000) {
       transitionIn: 'fadeInLeft',
     });
   } else {
-    pics.slice(0, limit).forEach(pic => {
-      const markup = createMarkup(pic);
-      refs.infoEl.insertAdjacentHTML('beforeend', markup);
-    });
-
+    const markup = createMarkup(pics);
+    refs.infoEl.insertAdjacentHTML('beforeend', markup);
     lightbox.refresh();
   }
 }
 
-function createMarkup(pic) {
-  return `<div class="image-box">
+function createMarkup(pics) {
+  return pics
+    .map(
+      pic => `<div class="image-box">
           <div class="general-frame">
 
             <div class="image-container">
@@ -50,5 +49,7 @@ function createMarkup(pic) {
                 </ul>
               </div>
           </div>
-    </div>`;
+    </div>`
+    )
+    .join('');
 }

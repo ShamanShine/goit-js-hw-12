@@ -78,7 +78,7 @@ async function onLoadMoreClick() {
 
   try {
     const data = await searchImages(query, page);
-    renderMarkup(refs, data.hits); // Добавляем новые изображения к уже загруженным
+    renderMarkup(refs, data.hits); // добавляем новые изображения к уже загруженным
 
     hideLoader();
     checkBtnVisibleStatus();
@@ -91,9 +91,24 @@ async function onLoadMoreClick() {
     });
     hideLoader();
     // lightbox.refresh();
+  } finally {
+    //проверяем и сообщаем, если конец колекции
+    if (page >= maxPage) {
+      iziToast.info({
+        message: 'End of image collection',
+        position: 'center',
+        transitionIn: 'fadeInLeft',
+      });
+    }
+    // получим высоту одной карточки
+    const cardHeight =
+      refs.infoEl.firstElementChild.getBoundingClientRect().height;
+
+    window.scrollBy({
+      top: 5 * cardHeight, // прокрутка на 6 высот карточки
+      behavior: 'smooth', // плавная анимация прокрутки
+    });
   }
-  const height = refs.formEl.firstElementChild.getBoundingClientRect().height;
-  // Здесь можно также добавить скроллинг к новым изображениям, если это необходимо
 }
 
 function showLoader() {

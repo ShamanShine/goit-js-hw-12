@@ -15,8 +15,6 @@ export async function searchImages(search, page) {
     if (response.status !== 200) {
       throw new Error(response.status);
     }
-    //рефакторинг
-    // const data = response.data;
 
     if (response.data.hits && response.data.hits.length > 0) {
       return response.data;
