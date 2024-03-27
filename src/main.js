@@ -45,6 +45,7 @@ async function onFormSubmit(e) {
   query = e.target.elements.query.value.trim();
   page = 1;
   showLoader();
+  hideLoadBtnAndMarkup();
   if (query === '') {
     iziToast.error({
       message: 'Please enter a search query',
@@ -72,9 +73,10 @@ async function onFormSubmit(e) {
         transitionIn: 'fadeInLeft',
       });
     }
+    checkBtnVisibleStatus();
   } catch (error) {
     console.error(error);
-    hideLoader();
+
     hideLoadBtnAndMarkup();
     iziToast.error({
       message: 'Failed to fetch images. Please try again later.',
@@ -83,7 +85,7 @@ async function onFormSubmit(e) {
     });
   } finally {
     e.target.reset();
-    checkBtnVisibleStatus();
+    hideLoader();
   }
 }
 // ================================== Функция для кнопки load more
